@@ -6,15 +6,32 @@ async function apiRequest<T>(
   endpoint: string,
   options?: RequestInit
 ): Promise<T> {
+  const token = typeof window !== "undefined"
+    ? localStorage.getItem("jwt_token")
+    : null;
+
+  const headers: Record<string, string> = {
+    "Content-Type": "application/json",
+  };
+
+  if (token) {
+    headers["Authorization"] = `Bearer ${token}`;
+  }
+
   const response = await fetch(`${API_BASE_URL}${endpoint}`, {
     headers: {
-      "Content-Type": "application/json",
+      ...headers,
       ...options?.headers,
     },
     ...options,
   });
 
   if (!response.ok) {
+    if (response.status === 401) {
+      localStorage.removeItem("jwt_token");
+      localStorage.removeItem("user");
+      throw new Error("Authentication expired. Please login again.");
+    }
     throw new Error(`API Error: ${response.statusText}`);
   }
 

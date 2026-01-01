@@ -1,9 +1,7 @@
-from dataclasses import dataclass
+"""
+Backward compatibility module.
+Redirects imports to database.models for SQLModel Task.
+"""
+from src.database.models import Task
 
-@dataclass
-class Task:
-    """Represents a single task in the to-do list."""
-    id: int
-    title: str
-    description: str
-    completed: bool = False
+__all__ = ["Task"]

@@ -20,12 +20,16 @@ export default function TaskForm({ onSubmit }: TaskFormProps) {
 
   return (
     <form onSubmit={handleSubmit} style={styles.form}>
-      <div style={styles.header}>
-        <span style={styles.headerIcon}>➕</span>
-        <span style={styles.headerText}>Create New Task</span>
+      <div style={styles.formHeader}>
+        <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
+          <line x1="12" y1="5" x2="12" y2="19" />
+          <line x1="5" y1="12" x2="19" y2="12" />
+        </svg>
+        <span style={styles.formTitle}>Create New Task</span>
       </div>
-      <div style={styles.formGroup}>
-        <label htmlFor="title" style={styles.label}>Title *</label>
+
+      <div style={styles.inputGroup}>
+        <label htmlFor="title" style={styles.label}>Title</label>
         <input
           id="title"
           type="text"
@@ -36,19 +40,30 @@ export default function TaskForm({ onSubmit }: TaskFormProps) {
           required
         />
       </div>
-      <div style={styles.formGroup}>
-        <label htmlFor="description" style={styles.label}>Description</label>
+
+      <div style={styles.inputGroup}>
+        <label htmlFor="description" style={styles.label}>Description <span style={styles.optional}>(optional)</span></label>
         <textarea
           id="description"
           value={description}
           onChange={(e) => setDescription(e.target.value)}
-          placeholder="Add more details about this task..."
+          placeholder="Add more details..."
           style={styles.textarea}
           rows={3}
         />
       </div>
-      <button type="submit" style={styles.button}>
-        <span style={styles.buttonIcon}>✓</span>
+
+      <button
+        type="submit"
+        style={{
+          ...styles.button,
+          ...(title.trim() ? styles.buttonActive : {})
+        }}
+        disabled={!title.trim()}
+      >
+        <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5">
+          <polyline points="20 6 9 17 4 12" />
+        </svg>
         Add Task
       </button>
     </form>
@@ -57,72 +72,84 @@ export default function TaskForm({ onSubmit }: TaskFormProps) {
 
 const styles = {
   form: {
-    backgroundColor: "rgba(255, 255, 255, 0.98)",
-    padding: "28px",
+    backgroundColor: "#1a1a1a",
+    padding: "24px",
     borderRadius: "16px",
-    marginBottom: "32px",
-    boxShadow: "0 10px 40px rgba(0, 0, 0, 0.1)",
-    border: "1px solid rgba(255, 255, 255, 0.2)",
+    border: "1px solid #2a2a2a",
+    boxShadow: "0 4px 20px rgba(0, 0, 0, 0.2)",
   } as const,
-  header: {
+  formHeader: {
     display: "flex" as const,
     alignItems: "center" as const,
     gap: "10px",
-    marginBottom: "24px",
-  } as const,
-  headerIcon: {
-    fontSize: "24px",
-  },
-  headerText: {
-    fontSize: "20px",
-    fontWeight: "700",
-    color: "#2d3748",
-  },
-  formGroup: {
     marginBottom: "20px",
+    color: "#f97316",
+  } as const,
+  formTitle: {
+    fontSize: "17px",
+    fontWeight: "600",
+    color: "#ffffff",
+  } as const,
+  inputGroup: {
+    marginBottom: "16px",
   } as const,
   label: {
     display: "block",
     marginBottom: "8px",
-    fontWeight: "600",
-    color: "#4a5568",
+    fontWeight: "500",
+    color: "#e5e5e5",
     fontSize: "14px",
-    letterSpacing: "0.5px",
-    textTransform: "uppercase",
+  } as const,
+  optional: {
+    color: "#6b7280",
+    fontWeight: "400",
   } as const,
   input: {
     width: "100%",
     padding: "14px 16px",
+    border: "1px solid #2a2a2a",
     borderRadius: "10px",
-    fontSize: "16px",
+    fontSize: "15px",
     boxSizing: "border-box" as const,
+    backgroundColor: "#141414",
+    color: "#ffffff",
+    transition: "all 0.2s ease",
   } as const,
   textarea: {
     width: "100%",
     padding: "14px 16px",
+    border: "1px solid #2a2a2a",
     borderRadius: "10px",
-    fontSize: "15px",
+    fontSize: "14px",
     boxSizing: "border-box" as const,
     resize: "vertical" as const,
-    lineHeight: "1.6",
+    lineHeight: 1.6,
+    fontFamily: "inherit",
+    backgroundColor: "#141414",
+    color: "#ffffff",
+    transition: "all 0.2s ease",
   } as const,
   button: {
-    width: "100%",
-    padding: "14px",
-    backgroundColor: "linear-gradient(135deg, #667eea 0%, #764ba2 100%)",
-    color: "white",
-    borderRadius: "10px",
-    fontSize: "16px",
-    fontWeight: "700",
-    cursor: "pointer",
     display: "flex" as const,
     alignItems: "center" as const,
     justifyContent: "center" as const,
     gap: "8px",
-    boxShadow: "0 4px 15px rgba(102, 126, 234, 0.4)",
+    width: "100%",
+    padding: "14px 20px",
+    backgroundColor: "#2a2a2a",
+    color: "#6b7280",
+    border: "none",
+    borderRadius: "10px",
+    fontSize: "15px",
+    fontWeight: "600",
+    cursor: "not-allowed",
+    transition: "all 0.2s ease",
+    marginTop: "8px",
   } as const,
-  buttonIcon: {
-    fontSize: "18px",
-    fontWeight: "900",
-  },
+  buttonActive: {
+    backgroundColor: "#f97316",
+    color: "#000000",
+    cursor: "pointer",
+    boxShadow: "0 4px 12px rgba(249, 115, 22, 0.3)",
+  } as const,
 };

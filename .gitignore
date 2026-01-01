@@ -10,11 +10,15 @@ wheels/
 # Virtual environments
 .venv
 
-# Phase-2 Data
-data/
+# Phase-2 Data (removed - now using PostgreSQL)
+# data/
 
 # Frontend
 /frontend/node_modules
 /frontend/.next
 /frontend/out
 /frontend/build
+
+# Database (PostgreSQL, no local .db files)
+# *.db
+# *.db-journal
