@@ -22,3 +22,5 @@ wheels/
 # Database (PostgreSQL, no local .db files)
 # *.db
 # *.db-journal
+ 
+ .env
