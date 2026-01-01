@@ -1,5 +1,6 @@
 # .gitignore
 # Python-generated files
+.env
 __pycache__/
 *.py[oc]
 build/
@@ -21,6 +22,4 @@ wheels/
 
 # Database (PostgreSQL, no local .db files)
 # *.db
-# *.db-journal
- 
- .env
+# *.db-j.env 
