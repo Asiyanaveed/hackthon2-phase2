@@ -1,0 +1,15 @@
+# Minikube-specific values
+backend:
+  enabled: true
+  replicaCount: 1  # Reduce replicas for local testing
+
+frontend:
+  enabled: true
+  replicaCount: 1
+
+ingress:
+  enabled: false  # Disable ingress for simple NodePort access
+
+# Disable PostgreSQL chart (using external Neon DB)
+postgresql:
+  enabled: false

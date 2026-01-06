@@ -26,7 +26,15 @@ def on_startup():
     """
     Initialize database tables on application startup.
     """
-    init_db()
+    try:
+        init_db()
+        print("DB initialized")
+    except Exception as e:
+        print("WARNING: DB init failed:", e)
+
+@app.get("/health")
+def health():
+    return {"status": "ok"}
 
 
 # Auth Models

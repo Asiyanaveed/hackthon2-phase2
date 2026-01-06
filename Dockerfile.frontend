@@ -1,0 +1,141 @@
+# # Frontend Dockerfile - Next.js Application
+# # Multi-stage build for production
+
+# # Stage 1: Dependencies
+# FROM node:20-alpine AS deps
+# WORKDIR /app
+
+# # Copy package files
+# COPY frontend/package.json frontend/package-lock.json* ./
+
+# # Install dependencies
+# RUN npm ci
+
+# # Copy public assets
+# COPY frontend/public ./public
+
+# # Stage 2: Build
+# FROM node:20-alpine AS builder
+# WORKDIR /app
+
+# # Copy package files and dependencies
+# COPY --from=deps /app/node_modules ./node_modules
+# COPY package.json package-lock.json* ./
+
+# # Copy source code
+# COPY frontend/. .
+
+# # Set build-time environment variable
+# ARG NEXT_PUBLIC_API_URL
+# ENV NEXT_PUBLIC_API_URL=${NEXT_PUBLIC_API_URL:-http://localhost:8000}
+
+# # Build the application
+# RUN npm run build
+
+# # Stage 3: Production Runner
+# FROM node:20-alpine AS runner
+# WORKDIR /app
+
+# # Create non-root user for security
+# RUN addgroup --system --gid 1001 nodejs
+# RUN adduser --system --uid 1001 nextjs
+
+# # Copy built assets
+# COPY --from=builder /app/public ./public
+# COPY --from=builder /app/.next/standalone ./
+# COPY --from=builder /app/.next/static ./.next/static
+
+# # Set ownership
+# RUN chown -R nextjs:nodejs /app
+
+# # Switch to non-root user
+# USER nextjs
+
+# # Expose port
+# EXPOSE 3000
+
+# # Environment variables
+# ENV PORT=3000
+# ENV HOSTNAME="0.0.0.0"
+
+# # Health check
+# HEALTHCHECK --interval=30s --timeout=10s --start-period=5s --retries=3 \
+#     CMD wget --no-verbose --tries=1 --spider http://localhost:3000/ || exit 1
+
+# # Start the application
+# CMD ["node", "server.js"]
+
+
+
+
+
+
+
+
+
+
+
+
+
+# Frontend Dockerfile - Next.js (pages router)
+# Production-ready, simple & correct
+
+# --------------------
+# Stage 1: Dependencies
+# --------------------
+FROM node:20-alpine AS deps
+WORKDIR /app
+
+# Copy frontend package files
+COPY frontend/package.json frontend/package-lock.json* ./
+
+# Install dependencies
+RUN npm ci
+
+# --------------------
+# Stage 2: Build
+# --------------------
+FROM node:20-alpine AS builder
+WORKDIR /app
+
+# Copy node_modules from deps
+COPY --from=deps /app/node_modules ./node_modules
+
+# Copy frontend source code
+COPY frontend/. .
+
+# Build-time env
+ARG NEXT_PUBLIC_API_URL
+ENV NEXT_PUBLIC_API_URL=${NEXT_PUBLIC_API_URL:-http://localhost:8000}
+
+# Disable Next telemetry & fix DNS
+ENV NEXT_TELEMETRY_DISABLED=1
+ENV NODE_OPTIONS=--dns-result-order=ipv4first
+
+# Build Next.js app
+RUN npm run build
+
+# --------------------
+# Stage 3: Production Runner
+# --------------------
+FROM node:20-alpine AS runner
+WORKDIR /app
+
+ENV NODE_ENV=production
+
+# Copy built app
+COPY --from=builder /app/.next ./.next
+COPY --from=builder /app/pages ./pages
+COPY --from=builder /app/components ./components
+COPY --from=builder /app/styles ./styles
+COPY --from=builder /app/lib ./lib
+COPY --from=builder /app/types ./types
+COPY --from=builder /app/package.json ./package.json
+COPY --from=builder /app/node_modules ./node_modules
+COPY --from=builder /app/next.config.js ./next.config.js
+
+EXPOSE 3000
+
+# Start Next.js
+CMD ["npm", "start"]
+

@@ -1,0 +1,91 @@
+# ===============================
+# Global settings
+# ===============================
+global:
+  imageRegistry: ""
+  imagePullSecrets: []
+
+# ===============================
+# Ingress (DISABLED for Minikube)
+# ===============================
+ingress:
+  enabled: false
+
+# ===============================
+# Backend configuration
+# ===============================
+backend:
+  replicaCount: 1
+
+  image:
+    repository: todo-backend
+    tag: phase4
+    pullPolicy: Never
+
+  service:
+    type: ClusterIP
+    port: 8000
+
+  resources:
+    requests:
+      memory: "256Mi"
+      cpu: "250m"
+    limits:
+      memory: "512Mi"
+      cpu: "500m"
+
+  # Environment variables (secrets come from Kubernetes Secret)
+  env:
+    - name: DATABASE_URL
+      valueFrom:
+        secretKeyRef:
+          name: todo-secrets
+          key: DATABASE_URL
+
+    - name: BETTER_AUTH_SECRET
+      valueFrom:
+        secretKeyRef:
+          name: todo-secrets
+          key: BETTER_AUTH_SECRET
+
+  livenessProbe:
+    httpGet:
+      path: /health
+      port: http
+    initialDelaySeconds: 10
+    periodSeconds: 10
+
+  readinessProbe:
+    httpGet:
+      path: /health
+      port: http
+    initialDelaySeconds: 5
+    periodSeconds: 5
+
+# ===============================
+# Frontend configuration
+# ===============================
+frontend:
+  replicaCount: 1
+
+  image:
+    repository: todo-frontend
+    tag: phase4
+    pullPolicy: Never
+
+  service:
+    type: NodePort
+    port: 3000
+    nodePort: 30080
+
+  env:
+    - name: NEXT_PUBLIC_API_URL
+      value: "http://todo-chatbot-backend:8000"
+
+  resources:
+    requests:
+      memory: "256Mi"
+      cpu: "250m"
+    limits:
+      memory: "512Mi"
+      cpu: "500m"

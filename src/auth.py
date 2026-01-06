@@ -144,7 +144,7 @@ BETTER_AUTH_SECRET = os.environ.get("BETTER_AUTH_SECRET")
 
 if not BETTER_AUTH_SECRET:
     raise ValueError(
-        "BETTER_AUTH_SECRET environment variable is required."
+        "WARNING: BETTER_AUTH_SECRET missing. Auth disabled."
     )
 
 # Token expiration

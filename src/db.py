@@ -16,7 +16,10 @@ if not DATABASE_URL:
         "Please set DATABASE_URL to your Neon PostgreSQL connection string."
     )
 
-engine = create_engine(DATABASE_URL, echo=False)
+engine = create_engine(
+    DATABASE_URL.replace("postgresql://", "postgresql+psycopg://"),
+    echo=False
+)
 
 
 def get_session() -> Generator[Session, None, None]:

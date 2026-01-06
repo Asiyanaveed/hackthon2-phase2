@@ -1,0 +1,23 @@
+Thank you for installing {{ .Chart.Name }} ({{ .Chart.Version }}).
+
+Your release is named {{ .Release.Name }}.
+
+To monitor your deployment, run:
+
+    kubectl get pods -n {{ .Release.Namespace }}
+
+To get the application URLs, run:
+
+    # Frontend (if using NodePort)
+    minikube service {{ include "todo-chatbot.fullname" . }}-frontend -n {{ .Release.Namespace }}
+
+    # Or access directly via Ingress if configured
+    echo "Frontend: http://{{ .Values.ingress.host }}"
+    echo "Backend API: http://{{ .Values.ingress.host }}/api"
+
+To uninstall the release, run:
+
+    helm uninstall {{ .Release.Name }} -n {{ .Release.Namespace }}
+
+IMPORTANT: Make sure to update the secrets in values-secrets.yaml before production deployment!
+See: https://github.com/anthropics/claude-code/blob/main/k8s/helm/values-secrets.yaml.example

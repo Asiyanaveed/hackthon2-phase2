@@ -1,0 +1,32 @@
+# kubectl-ai Configuration for Todo Chatbot
+# kubectl-ai is an AI-powered kubectl plugin for natural language kubectl commands
+
+# Installation:
+# 1. Install kubectl-ai: https://github.com/sozercan/kubectl-ai
+# 2. Set OpenAI API key: export OPENAI_API_KEY="your-key"
+# 3. Use natural language to interact with your cluster
+
+# Example commands for Todo Chatbot operations:
+
+# "Show me all pods in the todo-chatbot namespace"
+# "Scale the backend deployment to 3 replicas"
+# "Show me the logs from the frontend pod"
+# "Restart all pods in the todo-chatbot namespace"
+# "What's the CPU and memory usage of my deployments?"
+# "Describe the backend service"
+# "Show me all events in the todo-chatbot namespace"
+# "Get the health status of all services"
+# "Delete failed pods in the todo-chatbot namespace"
+# "Describe the todo-secrets secret"
+
+# Recommended kubectl-ai settings for this project:
+ai-plugin:
+  model: gpt-4o-mini  # Cost-effective model for kubectl operations
+  temperature: 0.1    # Low temperature for consistent results
+  max-tokens: 500     # Limit response length
+
+# Pre-defined contexts for quick operations
+contexts:
+  - name: todo-chatbot
+    namespace: todo-chatbot
+    description: "Todo Chatbot application namespace"

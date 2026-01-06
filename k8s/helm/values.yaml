@@ -1,0 +1,82 @@
+global:
+  imageRegistry: ""
+  imagePullSecrets: []
+
+ingress:
+  enabled: false
+
+backend:
+  enabled: true
+  replicaCount: 1
+  image:
+    repository: todo-backend
+    tag: phase4
+    pullPolicy: Never
+
+  service:
+    type: ClusterIP
+    port: 8000
+
+  resources:
+    requests:
+      memory: "256Mi"
+      cpu: "250m"
+    limits:
+      memory: "512Mi"
+      cpu: "500m"
+
+
+  env:
+    - name: PORT
+      value: "8000"
+    - name: DATABASE_URL
+      valueFrom:
+        secretKeyRef:
+          name: todo-secrets
+          key: DATABASE_URL
+    - name: BETTER_AUTH_SECRET
+      valueFrom:
+        secretKeyRef:
+          name: todo-secrets
+          key: BETTER_AUTH_SECRET
+    - name: OPENAI_API_KEY
+      valueFrom:
+        secretKeyRef:
+          name: todo-secrets
+          key: OPENAI_API_KEY
+          optional: true
+
+  livenessProbe:
+    httpGet:
+      path: /health
+      port: 8000
+    initialDelaySeconds: 10
+    periodSeconds: 30
+
+  readinessProbe:
+    httpGet:
+      path: /health
+      port: 8000
+    initialDelaySeconds: 5
+    periodSeconds: 10
+
+frontend:
+  enabled: true
+  replicaCount: 1
+  image:
+    repository: todo-frontend
+    tag: phase4
+    pullPolicy: Never
+
+  service:
+    type: NodePort
+    port: 3000
+    nodePort: 30080
+
+
+  env:
+    - name: NEXT_PUBLIC_API_URL
+      value: "http://todo-chatbot-backend:8000"
+
+postgresql:
+  enabled: false
